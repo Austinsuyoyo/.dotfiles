@@ -416,18 +416,32 @@ tmux_conf_uninstall_plugins_on_reload=true
 
 # to enable a plugin, use the 'set -g @plugin' syntax:
 # visit https://github.com/tmux-plugins for available plugins
+
 # Status Bar
 set -g @plugin 'tmux-plugins/tmux-cpu'
 
-# Function
-# prefix + Ctrl-s - save
-# prefix + Ctrl-r - restore
+# prefix + ctrl-s - save
+# prefix + ctrl-r - restore
 set -g @plugin 'tmux-plugins/tmux-resurrect'
-set -g @plugin 'tmux-plugins/tmux-copycat'
 set -g @plugin 'tmux-plugins/tmux-continuum'
-set -g @plugin 'tmux-plugins/tmux-urlview'
-set -g @plugin 'kristijanhusak/tmux-simple-git-status'
 set -g @continuum-restore 'on'
+
+# prefix + /      - regex search (strings work too)
+# prefix + ctrl-f - simple file search
+# prefix + ctrl-g - jumping over git status files (best used after git status command)
+# prefix + alt-h  - jumping over SHA-1/SHA-256 hashes (best used after git log command)
+# prefix + ctrl-u - url search (http, ftp and git urls)
+# prefix + ctrl-d - number search (mnemonic d, as digit)
+# prefix + alt-i  - ip address search
+set -g @plugin 'tmux-plugins/tmux-copycat'
+
+# git
+set -g @plugin 'kristijanhusak/tmux-simple-git-status'
+
+# Right click + swipe left/right - switch window
+# Right click + swipe up/d0wn    - switch session
+set -g @plugin 'jaclu/tmux-mouse-swipe'
+
 
 
 # -- custom variables ----------------------------------------------------------
