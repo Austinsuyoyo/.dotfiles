@@ -241,12 +241,13 @@ tmux_conf_theme_right_separator_sub='\uE0B3'
 #     - #{uptime_s}
 #     - #{username}
 #     - #{username_ssh}
-tmux_conf_theme_status_left="  #S | #{cpu_icon}#{cpu_percentage} | #{simple_git_status}"
+#     - #{simple_git_status}
+tmux_conf_theme_status_left="  #S  |  #{cpu_fg_color}#{cpu_percentage}| #{ram_fg_color}#{ram_percentage}"
 tmux_conf_theme_status_right=" #{prefix}#{mouse}#{pairing}#{synchronized} , %Y-%m-%d |  %R  "
 
 # status left style
-tmux_conf_theme_status_left_fg="$tmux_conf_theme_colour_1,$tmux_conf_theme_colour_1,$tmux_conf_theme_colour_1"
-tmux_conf_theme_status_left_bg="$tmux_conf_theme_colour_11,$tmux_conf_theme_colour_10,$tmux_conf_theme_colour_14"
+tmux_conf_theme_status_left_fg="$tmux_conf_theme_colour_1,$tmux_conf_theme_colour_5,$tmux_conf_theme_colour_5"
+tmux_conf_theme_status_left_bg="$tmux_conf_theme_colour_11,$tmux_conf_theme_colour_1,$tmux_conf_theme_colour_1"
 tmux_conf_theme_status_left_attr="bold,none,none"
 
 # status right style
@@ -255,7 +256,7 @@ tmux_conf_theme_status_right_bg="$tmux_conf_theme_colour_10,$tmux_conf_theme_col
 tmux_conf_theme_status_right_attr="none,none,bold"
 
 # pairing indicator
-tmux_conf_theme_pairing="⚇"                 # U+2687
+tmux_conf_theme_pairing=""                 # U+F50D
 tmux_conf_theme_pairing_fg="none"
 tmux_conf_theme_pairing_bg="none"
 tmux_conf_theme_pairing_attr="none"
@@ -267,7 +268,7 @@ tmux_conf_theme_prefix_bg="none"
 tmux_conf_theme_prefix_attr="none"
 
 # mouse indicator
-tmux_conf_theme_mouse=""                   # U+f87c
+tmux_conf_theme_mouse=""                   # U+F87C
 tmux_conf_theme_mouse_fg="none"
 tmux_conf_theme_mouse_bg="none"
 tmux_conf_theme_mouse_attr="none"
@@ -380,6 +381,12 @@ bind -n M-Right select-pane -R
 bind -n M-Up select-pane -U
 bind -n M-Down select-pane -D
 
+bind ` run "cut -c3- ~/.tmux.conf.local | sh -s switch_session"
+
+# click status bar
+bind -n MouseDown3StatusRight display-menu -T "#[align=centre]misc" -t = -x M -y W \
+"Show session Menu" s "run 'cut -c3- ~/.tmux.conf.local | sh -s switch_session'" \
+'' \
 
 # -- tpm -----------------------------------------------------------------------
 
@@ -417,8 +424,22 @@ tmux_conf_uninstall_plugins_on_reload=true
 # to enable a plugin, use the 'set -g @plugin' syntax:
 # visit https://github.com/tmux-plugins for available plugins
 
-# Status Bar
 set -g @plugin 'tmux-plugins/tmux-cpu'
+set -g @cpu_medium_thresh  "30"
+set -g @cpu_high_thresh  "80"
+set -g @cpu_low_fg_color "#[fg=#5e81ac]"
+set -g @cpu_medium_fg_color "#[fg=#ebcb8b]"
+set -g @cpu_high_fg_color "#[fg=#bf616a]"
+
+set -g @ram_medium_thresh  "30"
+set -g @ram_high_thresh  "80"
+set -g @ram_low_fg_color "#[fg=#5e81ac]"
+set -g @ram_medium_fg_color "#[fg=#ebcb8b]"
+set -g @ram_high_fg_color "#[fg=#bf616a]"
+
+
+set -g @plugin 'samoshkin/tmux-plugin-sysstat'
+set -g @plugin 'thewtex/tmux-mem-cpu-load'
 
 # prefix + ctrl-s - save
 # prefix + ctrl-r - restore
@@ -467,6 +488,10 @@ set -g @plugin 'jaclu/tmux-mouse-swipe'
 # online() {
 #   ping -c 1 1.1.1.1 >/dev/null 2>&1 && printf '✔' || printf '✘'
 # }
-#
+# switch_session(){
+#   tmux list-sessions -F '#S' \
+#   | awk 'BEGIN {ORS=" "} {print $1, NR, "\"switch-client -t", $1 "\""}' \
+#   | xargs tmux display-menu -T "Switch-session"
+# }
 # "$@"
 # # /!\ do not remove the previous line
