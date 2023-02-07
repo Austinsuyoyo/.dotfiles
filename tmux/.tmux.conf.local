@@ -379,11 +379,46 @@ bind -n M-Down select-pane -D
 
 bind ` run "cut -c3- ~/.tmux.conf.local | sh -s switch_session"
 
-# click status bar
-bind -n MouseDown3StatusRight display-menu -T "#[align=centre]misc" -t = -x M -y W \
-"Show session Menu" s "run 'cut -c3- ~/.tmux.conf.local | sh -s switch_session'" \
-'' \
+# Window tab menu
+bind-key  -T root  MouseDown3Status display-menu -T '#[align=centre]#{window_index}:#{window_name}' -t = -x W -y S \
+  '#{?#{>:#{session_windows},1},,-}Swap Left'      l 'swap-window -t:-1'                             \
+  '#{?#{>:#{session_windows},1},,-}Swap Right'     r 'swap-window -t:+1'                             \
+  '#{?pane_marked_set,,-}Swap Marked'              s 'swap-window'                                   \
+  ''                                                                                                 \
+  'Kill'                                            X 'kill-window'                                  \
+  'Respawn'                                         R 'respawn-window -k'                            \
+  '#{?pane_marked,Unmark,Mark}'                     m 'select-pane -m'                               \
+  'Rename'                                          n 'command-prompt -I "#W" "rename-window -- %%"' \
+  ''                                                                                                 \
+  'New After'                                       w 'new-window -a'                                \
+  'New At End'                                      W 'new-window'                                   \
 
+# Window status left menu
+bind-key  -T root  MouseDown3StatusLeft  display-menu -T '#[align=centre]#{session_name}' -t = -x M -y S \
+  'Next'        n 'switch-client -n'                              \
+  'Previous'    p 'switch-client -p'                              \
+  ''                                                              \
+  'Renumber'    N 'move-window -r'                                \
+  'Rename'      n 'command-prompt -I "#S" "rename-session -- %%"' \
+  ''                                                              \
+  'New Session' s 'new-session -c "#{pane_current_path}"'         \
+  'New Window'  w 'new-window -c "#{pane_current_path}"'          \
+
+# Window status right menu
+bind-key  -T root  MouseDown3StatusRight display-menu -T '#[align=centre]#{client_name}' -t = -x M -y S \
+  'Detach'          d   'detach-client'                                                                 \
+  'Detach & Kill'   X   'detach-client -P'                                                              \
+  'Detach Others'   o   'detach-client -a'                                                              \
+  ''                                                                                                    \
+  'Save session'    C-s 'run-shell "$TMUX_PLUGIN_MANAGER_PATH/tmux-resurrect/scripts/save.sh"'          \
+  'Restore session' C-r 'run-shell "$TMUX_PLUGIN_MANAGER_PATH/tmux-resurrect/scripts/restore.sh"'       \
+  'Switch to'       g   'run-shell "$TMUX_PLUGIN_MANAGER_PATH/tmux-sessionist/scripts/goto_session.sh"' \
+  ''                                                                                                    \
+  'Reload config'   R   'source-file "~/.tmux.conf" ; display-message "Config reloaded..."'  \
+  'Install plugin'  I   'run-shell "$TMUX_PLUGIN_MANAGER_PATH/tpm/bindings/install_plugins"'            \
+  'Update plugins'  U   'run-shell "$TMUX_PLUGIN_MANAGER_PATH/tpm/bindings/update_plugins"'             \
+  ''                                                                                                    \
+  'Lock'            l   'lock-client'                                                                   \
 # -- tpm -----------------------------------------------------------------------
 
 # while I don't use tpm myself, many people requested official support so here
@@ -459,7 +494,8 @@ set -g @plugin 'kristijanhusak/tmux-simple-git-status'
 # Right click + swipe up/d0wn    - switch session
 set -g @plugin 'jaclu/tmux-mouse-swipe'
 
-
+# session control
+set -g @plugin 'tmux-plugins/tmux-sessionist'
 
 # -- custom variables ----------------------------------------------------------
 
