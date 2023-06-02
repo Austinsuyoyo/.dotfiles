@@ -5,6 +5,15 @@
 #         Copyright 2012— Gregory Pakosz (@gpakosz).
 
 
+# -- session creation ----------------------------------------------------------
+
+# prompt for session name when creating a new session, possible values are:
+#   - true
+#   - false (default)
+#   - disabled (do not modify new-session bindings)
+tmux_conf_new_session_prompt=false
+
+
 # -- windows & pane creation ---------------------------------------------------
 
 # new window retains current path, possible values are:
@@ -12,6 +21,12 @@
 #   - false (default)
 #   - disabled (do not modify new-window bindings)
 tmux_conf_new_window_retain_current_path=false
+
+# new window tries to reconnect ssh sessions, possible values are:
+#   - true
+#   - false (default)
+#   - disabled (do not modify new-window bindings)
+tmux_conf_new_window_reconnect_ssh=false
 
 # new pane retains current path, possible values are:
 #   - true (default)
@@ -378,6 +393,9 @@ bind -n M-Up select-pane -U
 bind -n M-Down select-pane -D
 
 bind ` run "cut -c3- ~/.tmux.conf.local | sh -s switch_session"
+
+bind-key -T prefix C-g split-window \
+  "$SHELL --login -i -c 'navi --print | head -c -1 | tmux load-buffer -b tmp - ; tmux paste-buffer -p -t {last} -b tmp -d'"
 
 # Window tab menu
 bind-key  -T root  MouseDown3Status display-menu -T '#[align=centre]#{window_index}:#{window_name}' -t = -x W -y S \
