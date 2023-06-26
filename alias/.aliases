@@ -7,7 +7,7 @@ alias less='less -FSRXc'                    # Preferred 'less' implementation
 alias free="free -mth"                      # Preferred 'free' implementation
 alias cd..='cd ../'                         # Go back 1 directory level (for fast typers)
 alias ..='cd ../'                           # Go back 1 directory level
-alias ...='cd ../../'                       # Go back 2 directory levels
+alias .2='cd ../'                           # Go back 2 directory levels
 alias .3='cd ../../../'                     # Go back 3 directory levels
 alias .4='cd ../../../../'                  # Go back 4 directory levels
 alias .5='cd ../../../../../'               # Go back 5 directory levels
@@ -20,7 +20,8 @@ alias 000='chmod 000'
 alias 400='chmod 400'               
 alias 644='chmod 644'
 alias 755='chmod 755'
-alias dud="find \$PWD -maxdepth 1 -type d -path \"\$PWD\/*\" -exec bash -c 'echo -n \"{}: \"; diskus \"{}\";' \;"
+alias dud="find \$PWD -maxdepth 1 -type d -path \"\$PWD\/*\"  -exec bash -c 'printf \"%6s %s\n\" \$(diskus \"{}\" | numfmt --to iec ) \"{}\" ' \;"
+
 # extract:  Extract most know archives with one command
 extract () {
     if [ -f $1 ] ; then
