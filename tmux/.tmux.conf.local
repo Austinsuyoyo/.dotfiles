@@ -40,12 +40,6 @@ tmux_conf_new_pane_retain_current_path=true
 #   - disabled (do not modify split-window bindings)
 tmux_conf_new_pane_reconnect_ssh=false
 
-# prompt for session name when creating a new session, possible values are:
-#   - true
-#   - false (default)
-#   - disabled (do not modify new-session bindings)
-tmux_conf_new_session_prompt=false
-
 
 # -- display -------------------------------------------------------------------
 
@@ -487,7 +481,7 @@ set -g @ram_medium_fg_color "#[fg=#ebcb8b]"
 set -g @ram_high_fg_color "#[fg=#bf616a]"
 
 
-set -g @plugin 'samoshkin/tmux-plugin-sysstat'
+#set -g @plugin 'samoshkin/tmux-plugin-sysstat'
 set -g @plugin 'thewtex/tmux-mem-cpu-load'
 
 # prefix + ctrl-s - save
@@ -506,7 +500,7 @@ set -g @continuum-restore 'on'
 set -g @plugin 'tmux-plugins/tmux-copycat'
 
 # git
-set -g @plugin 'kristijanhusak/tmux-simple-git-status'
+#set -g @plugin 'kristijanhusak/tmux-simple-git-status'
 
 # Right click + swipe left/right - switch window
 # Right click + swipe up/d0wn    - switch session

@@ -7,22 +7,24 @@ alias less='less -FSRXc'                    # Preferred 'less' implementation
 alias free="free -mth"                      # Preferred 'free' implementation
 alias cd..='cd ../'                         # Go back 1 directory level (for fast typers)
 alias ..='cd ../'                           # Go back 1 directory level
-alias .2='cd ../'                           # Go back 2 directory levels
+alias .1='cd ../'                           # Go back 1 directory level
+alias .2='cd ../../'                        # Go back 2 directory levels
 alias .3='cd ../../../'                     # Go back 3 directory levels
 alias .4='cd ../../../../'                  # Go back 4 directory levels
 alias .5='cd ../../../../../'               # Go back 5 directory levels
 alias .6='cd ../../../../../../'            # Go back 6 directory levels
+alias .7='cd ../../../../../../../'         # Go back 7 directory levels
 alias ~="cd ~"                              # ~:            Go Home
 alias -- -="cd -"                           # -:            Go Back
 alias c='clear'                             # c:            Clear terminal display
 alias mx='chmod a+x'
 alias 000='chmod 000'
-alias 400='chmod 400'               
+alias 400='chmod 400'
 alias 644='chmod 644'
 alias 755='chmod 755'
 alias dud="find \$PWD -maxdepth 1 -type d -path \"\$PWD\/*\"  -exec bash -c 'printf \"%6s %s\n\" \$(diskus \"{}\" | numfmt --to iec ) \"{}\" ' \;"
-
-# extract:  Extract most know archives with one command
+# Extract most know archives with one command
+# usage: extract file.ext 
 extract () {
     if [ -f $1 ] ; then
         case $1 in
@@ -44,7 +46,25 @@ extract () {
         fi
 }
 
-# dig:  dig dns
+# usage:  digga dns
 digga() {
 	dig +nocmd "$1" any +multiline +noall +answer
+}
+
+# usage: avg_time n command ...
+avg_time() {
+    n=$1; shift
+    (($# > 0)) || return                   # bail if no command given
+    for ((i = 0; i < n; i++)); do
+        { time -p "$@" &>/dev/null; } 2>&1 # ignore the output of the command
+                                           # but collect time's output in stdout
+    done | awk '
+        /real/ { real = real + $2; nr++ }
+        /user/ { user = user + $2; nu++ }
+        /sys/  { sys  = sys  + $2; ns++}
+        END    {
+                 if (nr>0) printf("real %f\n", real/nr);
+                 if (nu>0) printf("user %f\n", user/nu);
+                 if (ns>0) printf("sys %f\n",  sys/ns)
+               }'
 }
