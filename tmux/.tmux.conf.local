@@ -265,7 +265,7 @@ tmux_conf_theme_right_separator_sub='\uE0B3'
 #     - #{simple_git_status}
 tmux_conf_theme_status_left="  #S  |  #{cpu_fg_color}#{cpu_percentage}| #{ram_fg_color}#{ram_percentage}"
 # use quota
-#tmux_conf_theme_status_left=tmux_conf_theme_status_left="  #S  |  #{cpu_fg_color}#{cpu_percentage}| #{ram_fg_color}#{ram_percentage}| #{quota_fg_color}#{quota_used}(#{quota_percentage})"
+#tmux_conf_theme_status_left="  #S  |  #{cpu_fg_color}#{cpu_percentage}| #{ram_fg_color}#{ram_percentage}| #{quota_fg_color}#{quota_used}(#{quota_percentage})"
 tmux_conf_theme_status_right=" #{prefix}#{mouse}#{pairing}#{synchronized} , %Y-%m-%d |  %R  "
 
 # status left style
