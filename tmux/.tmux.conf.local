@@ -27,7 +27,7 @@ tmux_conf_new_session_prompt=false
 #   - true
 #   - false (default)
 #   - disabled (do not modify new-session bindings)
-tmux_conf_new_session_retain_current_path=false
+tmux_conf_new_session_retain_current_path=true
 
 
 # -- windows & pane creation ---------------------------------------------------
@@ -265,7 +265,7 @@ tmux_conf_theme_right_separator_sub='\uE0B3'
 #     - #{simple_git_status}
 tmux_conf_theme_status_left="  #S  |  #{cpu_fg_color}#{cpu_percentage}| #{ram_fg_color}#{ram_percentage}"
 # use quota
-#tmux_conf_theme_status_left="  #S  |  #{cpu_fg_color}#{cpu_percentage}| #{ram_fg_color}#{ram_percentage}| #{quota_space_used}"
+#tmux_conf_theme_status_left=tmux_conf_theme_status_left="  #S  |  #{cpu_fg_color}#{cpu_percentage}| #{ram_fg_color}#{ram_percentage}| #{quota_fg_color}#{quota_used}(#{quota_percentage})"
 tmux_conf_theme_status_right=" #{prefix}#{mouse}#{pairing}#{synchronized} , %Y-%m-%d |  %R  "
 
 # status left style
@@ -408,13 +408,11 @@ bind -n M-Right select-pane -R
 bind -n M-Up select-pane -U
 bind -n M-Down select-pane -D
 
-bind ` run "cut -c3- ~/.tmux.conf.local | sh -s switch_session"
-
 bind-key -T prefix C-g split-window \
   "$SHELL --login -i -c 'navi --print | head -c -1 | tmux load-buffer -b tmp - ; tmux paste-buffer -p -t {last} -b tmp -d'"
 
 # Window tab menu
-bind-key  -T root  MouseDown3Status display-menu -T '#[align=centre]#{window_index}:#{window_name}' -t = -x W -y S \
+bind -n MouseDown3Status display-menu -T '#[align=centre]#{window_index}:#{window_name}' -t= -xW -yW \
   '#{?#{>:#{session_windows},1},,-}Swap Left'      l 'swap-window -t:-1'                             \
   '#{?#{>:#{session_windows},1},,-}Swap Right'     r 'swap-window -t:+1'                             \
   '#{?pane_marked_set,,-}Swap Marked'              s 'swap-window'                                   \
@@ -428,9 +426,10 @@ bind-key  -T root  MouseDown3Status display-menu -T '#[align=centre]#{window_ind
   'New At End'                                      W 'new-window'                                   \
 
 # Window status left menu
-bind-key  -T root  MouseDown3StatusLeft  display-menu -T '#[align=centre]#{session_name}' -t = -x M -y S \
+bind -n  MouseDown3StatusLeft  display-menu -T '#[align=centre]#{session_name}' -t= -xM -yW \
   'Next'        n 'switch-client -n'                              \
   'Previous'    p 'switch-client -p'                              \
+  'Switch'      g 'run-shell "cut -c3- ~/.tmux.conf.local | sh -s switch_session"' \
   ''                                                              \
   'Renumber'    N 'move-window -r'                                \
   'Rename'      n 'command-prompt -I "#S" "rename-session -- %%"' \
@@ -439,16 +438,15 @@ bind-key  -T root  MouseDown3StatusLeft  display-menu -T '#[align=centre]#{sessi
   'New Window'  w 'new-window -c "#{pane_current_path}"'          \
 
 # Window status right menu
-bind-key  -T root  MouseDown3StatusRight display-menu -T '#[align=centre]#{client_name}' -t = -x M -y S \
+bind -n  MouseDown3StatusRight display-menu -T '#[align=centre]#{client_name}' -t= -xM -yW \
   'Detach'          d   'detach-client'                                                                 \
   'Detach & Kill'   X   'detach-client -P'                                                              \
   'Detach Others'   o   'detach-client -a'                                                              \
   ''                                                                                                    \
   'Save session'    C-s 'run-shell "$TMUX_PLUGIN_MANAGER_PATH/tmux-resurrect/scripts/save.sh"'          \
   'Restore session' C-r 'run-shell "$TMUX_PLUGIN_MANAGER_PATH/tmux-resurrect/scripts/restore.sh"'       \
-  'Switch to'       g   'run-shell "$TMUX_PLUGIN_MANAGER_PATH/tmux-sessionist/scripts/goto_session.sh"' \
   ''                                                                                                    \
-  'Reload config'   R   'source-file "~/.tmux.conf" ; display-message "Config reloaded..."'  \
+  'Reload config'   R   'source-file "~/.tmux.conf" ; display-message "Config reloaded..."'             \
   'Install plugin'  I   'run-shell "$TMUX_PLUGIN_MANAGER_PATH/tpm/bindings/install_plugins"'            \
   'Update plugins'  U   'run-shell "$TMUX_PLUGIN_MANAGER_PATH/tpm/bindings/update_plugins"'             \
   ''                                                                                                    \
@@ -523,13 +521,21 @@ set -g @plugin 'tmux-plugins/tmux-copycat'
 
 # Right click + swipe left/right - switch window
 # Right click + swipe up/d0wn    - switch session
-set -g @plugin 'jaclu/tmux-mouse-swipe'
+# It's will override MouseDrag3Pane & MouseDragEnd3Pane and unbind MouseDown3Pane
+#set -g @plugin 'jaclu/tmux-mouse-swipe'
 
 # session control
 set -g @plugin 'tmux-plugins/tmux-sessionist'
 
 # quota
 #set -g @plugin 'austinsuyoyo/tmux-quota'
+#set -g @quota_mount_point "/dev/nvme2n1p1"
+#set -g @quota_medium_thresh  "50"
+#set -g @quota_high_thresh  "80"
+#set -g @quota_low_fg_color "#[fg=#5e81ac]"
+#set -g @quota_medium_fg_color "#[fg=#ebcb8b]"
+#set -g @quota_high_fg_color "#[fg=#bf616a]"
+
 
 # sidebar
 # prefix + Tab - toggle sidebar with a directory tree
