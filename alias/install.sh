@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 BASEDIR=$(cd "$(dirname "$0")" && pwd)
 
-# Create symbolic links 
+# Create symbolic links
 if [ ! -f ~/.aliases ]; then
     ln -sf $BASEDIR/.aliases ~/.aliases
 fi
